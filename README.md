@@ -1,4 +1,4 @@
-[![Molecule](https://github.com/iamenr0s/ansible-role-kernel-hardening/actions/workflows/molecule.yml/badge.svg)](https://github.com/iamenr0s/ansible-role-kernel-hardening/actions/workflows/molecule.yml) ![Ansible Role](https://img.shields.io/ansible/role/d/iamenr0s/ansible_role_kernel_hardening) [![CodeFactor](https://www.codefactor.io/repository/github/iamenr0s/ansible-role-kernel-hardening/badge)](https://www.codefactor.io/repository/github/iamenr0s/ansible-role-kernel-hardening)
+[![Molecule](https://github.com/iamenr0s/ansible-role-kernel-hardening/actions/workflows/molecule.yml/badge.svg)](https://github.com/iamenr0s/ansible-role-kernel-hardening/actions/workflows/molecule.yml) ![Ansible Role](https://img.shields.io/ansible/role/d/iamenr0s/kernel_hardening) [![CodeFactor](https://www.codefactor.io/repository/github/iamenr0s/ansible-role-kernel-hardening/badge)](https://www.codefactor.io/repository/github/iamenr0s/ansible-role-kernel-hardening)
 
 # Ansible Role: Kernel Hardening
 
@@ -79,4 +79,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 Author: iamenr0s
 
-Galaxy: `iamenr0s.ansible_role_kernel_hardening`
+Galaxy: `iamenr0s.kernel_hardening`
