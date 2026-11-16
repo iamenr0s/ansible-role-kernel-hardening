@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+# iamenr0s.linux_hardening.kernel_hardening. Local changes are overwritten.
+{% for m in __lh_kernel_desired %}
+install {{ m }} /bin/true
+blacklist {{ m }}
+{% endfor %}

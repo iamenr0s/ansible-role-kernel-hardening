@@ -1,0 +1,15 @@
+---
+argument_specs:
+  main:
+    short_description: Audit and disable rarely needed kernel modules; the only role that writes modprobe blacklists.
+    options:
+      linux_hardening_mode: {type: str, default: audit, choices: [audit, remediate], description: "audit is read-only."}
+      linux_hardening_confirm_remediation: {type: bool, default: false, description: "Must be true before remediate changes anything."}
+      linux_hardening_profile: {type: str, default: cis_level1, choices: [baseline, cis_level1, cis_level2], description: "cis_level2 adds the stricter module list."}
+      linux_hardening_backup: {type: bool, default: true, description: "Back up the drop-in when it changes."}
+      linux_hardening_verify: {type: bool, default: true, description: "Re-audit after remediation."}
+      linux_hardening_fail_on_error: {type: bool, default: true, description: "Fail the play when audit finds deviations."}
+      linux_hardening_kernel_enabled: {type: bool, default: true, description: "Run the role."}
+      linux_hardening_kernel_dropin: {type: path, default: /etc/modprobe.d/99-linux-hardening.conf, description: "modprobe drop-in."}
+      linux_hardening_kernel_modules_allow: {type: list, elements: str, default: [], description: "Modules to leave available."}
+      linux_hardening_kernel_modules_extra: {type: list, elements: str, default: [], description: "Additional modules to disable."}

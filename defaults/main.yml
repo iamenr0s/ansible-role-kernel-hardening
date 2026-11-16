@@ -1,0 +1,17 @@
+---
+# --- Shared collection variables ---
+linux_hardening_mode: audit                    # audit (read-only) | remediate
+linux_hardening_confirm_remediation: false     # must be true for any change
+linux_hardening_profile: cis_level1            # cis_level2 adds the stricter modules in vars/main.yml
+linux_hardening_backup: true
+linux_hardening_verify: true
+linux_hardening_fail_on_error: true
+
+# --- kernel_hardening (sole owner of module blacklisting in this collection) ---
+linux_hardening_kernel_enabled: true
+linux_hardening_kernel_dropin: /etc/modprobe.d/99-linux-hardening.conf
+
+# Modules to keep available even though the profile would disable them (e.g. [udf] for optical media).
+linux_hardening_kernel_modules_allow: []
+# Extra modules to disable on top of the profile.
+linux_hardening_kernel_modules_extra: []

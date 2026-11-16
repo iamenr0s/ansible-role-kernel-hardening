@@ -1,0 +1,25 @@
+---
+# Read-only. Sets __lh_kernel_desired (sorted module names) and __lh_kernel_loaded (desired modules loaded now).
+- name: Build the desired module list
+  ansible.builtin.set_fact:
+    __lh_kernel_desired: >-
+      {{ (__linux_hardening_kernel_base
+          + (__linux_hardening_kernel_strict if linux_hardening_profile == 'cis_level2' else [])
+          + linux_hardening_kernel_modules_extra)
+         | difference(linux_hardening_kernel_modules_allow) | unique | sort }}
+
+- name: Read the loaded modules
+  ansible.builtin.slurp:
+    src: /proc/modules
+  register: __lh_kernel_proc
+  failed_when: false
+  check_mode: false
+
+- name: Find desired modules that are loaded now
+  ansible.builtin.set_fact:
+    __lh_kernel_loaded: >-
+      {{ __lh_kernel_desired
+         | select('in', (__lh_kernel_proc.content | default('') | b64decode).splitlines()
+                        | map('split', ' ') | map('first') | list
+                        | map('replace', '_', '-') | list)
+         | list }}

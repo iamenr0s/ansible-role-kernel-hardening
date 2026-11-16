@@ -1,0 +1,35 @@
+---
+- name: Verify
+  hosts: all
+  become: false
+  gather_facts: true
+  tasks:
+    - name: Audit again, without failing on loaded modules
+      ansible.builtin.include_role:
+        name: "{{ playbook_dir }}/../.."  # noqa: role-name[path]
+      vars:
+        linux_hardening_mode: audit
+        linux_hardening_fail_on_error: false
+        linux_hardening_kernel_modules_allow: [hfs]
+        linux_hardening_kernel_modules_extra: [ax25]
+
+    - name: The drop-in is correct
+      ansible.builtin.assert:
+        that:
+          - linux_hardening_kernel_findings | selectattr('key', 'search', '^drop-in') | list | length == 0
+        quiet: true
+
+    - name: Read the drop-in
+      ansible.builtin.slurp:
+        src: /etc/modprobe.d/99-linux-hardening.conf
+      register: __f
+
+    - name: Assert content, allow-list and extra
+      ansible.builtin.assert:
+        that:
+          - "'install cramfs /bin/true' in (__f.content | b64decode)"
+          - "'blacklist cramfs' in (__f.content | b64decode)"
+          - "'ax25' in (__f.content | b64decode)"
+          - "'hfs\n' not in (__f.content | b64decode).replace('hfsplus', '')"
+          - "'sctp' not in (__f.content | b64decode)"
+        quiet: true

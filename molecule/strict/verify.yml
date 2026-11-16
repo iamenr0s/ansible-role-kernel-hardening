@@ -1,0 +1,17 @@
+---
+- name: Verify
+  hosts: all
+  become: false
+  gather_facts: true
+  tasks:
+    - name: Read the drop-in
+      ansible.builtin.slurp:
+        src: /etc/modprobe.d/99-linux-hardening.conf
+      register: __f
+
+    - name: The strict modules are present
+      ansible.builtin.assert:
+        that:
+          - "'blacklist sctp' in (__f.content | b64decode)"
+          - "'blacklist usb-storage' in (__f.content | b64decode)"
+        quiet: true

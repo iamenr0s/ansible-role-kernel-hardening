@@ -1,0 +1,5 @@
+---
+# Our own selection of rarely needed modules. NOT a verified CIS mapping (all entries unmapped).
+__linux_hardening_kernel_base: [cramfs, freevxfs, hfs, hfsplus, jffs2, dccp, rds, tipc]
+# Added when linux_hardening_profile is cis_level2. usb-storage blocks USB disks: allow it on desktops.
+__linux_hardening_kernel_strict: [sctp, udf, usb-storage]
