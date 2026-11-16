@@ -2,7 +2,7 @@
 - name: Converge (audit only)
   hosts: all
   become: false
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: Audit
       ansible.builtin.include_role:

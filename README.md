@@ -19,8 +19,9 @@ Our own selection (not a verified CIS mapping): `cramfs freevxfs hfs hfsplus jff
 ## Example
 ```yaml
 - hosts: all
+  become: true
   roles:
-    - role: iamenr0s.linux_hardening.kernel_hardening
+    - role: iamenr0s.kernel_hardening
       vars:
         linux_hardening_mode: remediate
         linux_hardening_confirm_remediation: true
