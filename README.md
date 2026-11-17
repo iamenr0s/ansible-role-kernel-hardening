@@ -10,7 +10,7 @@ Sole owner of kernel module blacklisting in this collection. Writes one drop-in,
 Our own selection (not a verified CIS mapping): `cramfs freevxfs hfs hfsplus jffs2 dccp rds tipc`. `cis_level2` adds `sctp udf usb-storage` (usb-storage blocks USB disks). Exact list: `vars/main.yml`. Keep a module with `linux_hardening_kernel_modules_allow`, add one with `linux_hardening_kernel_modules_extra`.
 
 ## Modes
-`audit` (default) is read-only and sets `linux_hardening_kernel_findings` (`key, expected, actual, fixable`). `remediate` needs `linux_hardening_confirm_remediation: true`.
+`audit` (default) is read-only and sets `linux_hardening_kernel_findings` (`key, expected, actual, fixable`). `remediate` needs `linux_hardening_confirm_remediation: true`; with `--check` it previews the change and skips the re-audit.
 
 ## Safety
 - Modules that are already loaded are never unloaded; they are reported (`fixable: false`) and the drop-in takes effect for them after a reboot. They do not fail the run after remediation.
@@ -29,7 +29,7 @@ Our own selection (not a verified CIS mapping): `cramfs freevxfs hfs hfsplus jff
 ```
 
 ## Verification
-Molecule `default` (allow-list, extra, idempotence, re-audit), `strict`, `audit` (writes nothing), `refuse`. Tested: AlmaLinux 9 only so far.
+Molecule `default` (check mode, allow-list, extra, idempotence, re-audit), `strict`, `audit` (writes nothing), `refuse`. Tested: AlmaLinux 9 only so far.
 
 ## Rollback
 Delete the drop-in (a backup of any earlier version is kept when `linux_hardening_backup` is true).
