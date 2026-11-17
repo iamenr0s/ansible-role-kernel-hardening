@@ -2,12 +2,22 @@
 
 # Ansible Role: Kernel Hardening
 
-> Standalone copy of `kernel_hardening` from the [iamenr0s.linux_hardening](https://github.com/iamenr0s/linux-hardening-collection) collection. Variables keep the collection-wide `linux_hardening_*` prefix.
+This role audits and disables rarely needed kernel modules on Debian/Ubuntu, RHEL/AlmaLinux/RockyLinux and Fedora servers. It writes one drop-in file, `/etc/modprobe.d/99-linux-hardening.conf`, and never unloads a module that is already loaded.
 
-Sole owner of kernel module blacklisting in this collection. Writes one drop-in, `/etc/modprobe.d/99-linux-hardening.conf`, with `install <module> /bin/true` and `blacklist <module>` for rarely needed modules. Sysctl settings belong to `sysctl_hardening`.
+Features
+--------
+- Audit mode by default: read-only, and reports every deviation. Changes need `linux_hardening_confirm_remediation: true`.
+- Writes `install <module> /bin/true` and `blacklist <module>` for each disabled module.
+- Reports loaded modules but never unloads them.
+- Supports check mode: `--check` previews remediation.
+- Backs up the drop-in file before changing it.
+- The only role in the `iamenr0s.linux_hardening` collection that writes modprobe blacklists; sysctl settings belong to `sysctl_hardening`.
 
 ## What it disables
 Our own selection (not a verified CIS mapping): `cramfs freevxfs hfs hfsplus jffs2 dccp rds tipc`. `cis_level2` adds `sctp udf usb-storage` (usb-storage blocks USB disks). Exact list: `vars/main.yml`. Keep a module with `linux_hardening_kernel_modules_allow`, add one with `linux_hardening_kernel_modules_extra`.
+
+## Variable names
+Variables use the collection-wide `linux_hardening_*` prefix (shared with sibling roles) rather than `kernel_hardening_*`. Full list: `defaults/main.yml` and `meta/argument_specs.yml`. `linux_hardening_profile`: `baseline` and `cis_level1` behave the same here; `cis_level2` adds the stricter modules.
 
 ## Modes
 `audit` (default) is read-only and sets `linux_hardening_kernel_findings` (`key, expected, actual, fixable`). `remediate` needs `linux_hardening_confirm_remediation: true`; with `--check` it previews the change and skips the re-audit.
@@ -29,7 +39,7 @@ Our own selection (not a verified CIS mapping): `cramfs freevxfs hfs hfsplus jff
 ```
 
 ## Verification
-Molecule `default` (check mode, allow-list, extra, idempotence, re-audit), `strict`, `audit` (writes nothing), `refuse`. Tested: AlmaLinux 9 only so far.
+Molecule `default` (check mode, allow-list, extra, idempotence, re-audit), `strict`, `audit` (writes nothing), `refuse`. Tested: AlmaLinux 9 only so far. CI matrix: AlmaLinux 8–10, Rocky 8–10, Fedora 42–44, Debian 12–13, Ubuntu 22.04/24.04.
 
 ## Rollback
 Delete the drop-in (a backup of any earlier version is kept when `linux_hardening_backup` is true).
