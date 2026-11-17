@@ -5,8 +5,7 @@ dependencies: []
 galaxy_info:
   role_name: kernel_hardening
   author: iamenr0s
-  description: >-
-    Audit-first kernel module disabling via modprobe.d, sole owner of module blacklisting (iamenr0s.linux_hardening).
+  description: Audit-first kernel module disabling via modprobe.d (iamenr0s.linux_hardening).
   license: MIT
   min_ansible_version: "2.16"
   platforms:
