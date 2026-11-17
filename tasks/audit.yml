@@ -13,17 +13,25 @@
   register: __lh_kernel_content
   when: __lh_kernel_file.stat.exists
 
+- name: Check the drop-in for drift
+  ansible.builtin.set_fact:
+    __lh_kernel_dropin_drift: >-
+      {{ not __lh_kernel_file.stat.exists
+         or __lh_kernel_file.stat.mode != '0644'
+         or (__lh_kernel_content.content | b64decode) != lookup('ansible.builtin.template', 'modprobe.conf.j2') }}
+
 - name: Compare with desired state
   ansible.builtin.set_fact:
     __lh_kernel_findings: >-
       {%- set out = [] -%}
-      {%- if not __lh_kernel_file.stat.exists
-             or (__lh_kernel_content.content | b64decode) != lookup('ansible.builtin.template', 'modprobe.conf.j2')
-             or __lh_kernel_file.stat.mode != '0644' -%}
-      {%- set _ = out.append({'key': 'drop-in ' ~ linux_hardening_kernel_dropin, 'expected': 'present with the desired modules', 'actual': 'missing or different', 'fixable': true}) -%}
+      {%- if __lh_kernel_dropin_drift | bool -%}
+      {%- set _ = out.append({'key': 'drop-in ' ~ linux_hardening_kernel_dropin,
+                              'expected': 'present with the desired modules',
+                              'actual': 'missing or different', 'fixable': true}) -%}
       {%- endif -%}
       {%- for m in __lh_kernel_loaded -%}
-      {%- set _ = out.append({'key': 'module ' ~ m, 'expected': 'not loaded', 'actual': 'loaded (unload or reboot after remediation)', 'fixable': false}) -%}
+      {%- set _ = out.append({'key': 'module ' ~ m, 'expected': 'not loaded',
+                              'actual': 'loaded (unload or reboot after remediation)', 'fixable': false}) -%}
       {%- endfor -%}
       {{ out | to_json }}
 
@@ -41,8 +49,7 @@
     msg: "kernel_hardening found {{ __lh_kernel_blocking | length }} deviation(s)."
   vars:
     __lh_kernel_blocking: >-
-      {{ linux_hardening_kernel_findings
-         if (linux_hardening_fail_on_error | bool) and not (__lh_kernel_audit_fatal | default(false))
-         else linux_hardening_kernel_findings | selectattr('fixable') | list
-         if (__lh_kernel_audit_fatal | default(false)) else [] }}
+      {{ linux_hardening_kernel_findings | selectattr('fixable') | list
+         if __lh_kernel_audit_fatal | default(false)
+         else (linux_hardening_kernel_findings if linux_hardening_fail_on_error | bool else []) }}
   when: __lh_kernel_blocking | length > 0

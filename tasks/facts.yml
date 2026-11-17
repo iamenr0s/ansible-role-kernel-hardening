@@ -19,7 +19,6 @@
   ansible.builtin.set_fact:
     __lh_kernel_loaded: >-
       {{ __lh_kernel_desired
-         | select('in', (__lh_kernel_proc.content | default('') | b64decode).splitlines()
-                        | map('split', ' ') | map('first') | list
-                        | map('replace', '_', '-') | list)
+         | select('in', __lh_kernel_proc.content | default('') | b64decode
+                        | regex_findall('(?m)^[^ ]+') | map('replace', '_', '-') | list)
          | list }}

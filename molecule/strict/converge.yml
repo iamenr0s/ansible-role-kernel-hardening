@@ -2,7 +2,7 @@
 - name: Converge (cis_level2 adds the strict settings)
   hosts: all
   become: false
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: Remediate with the strict profile
       ansible.builtin.include_role:

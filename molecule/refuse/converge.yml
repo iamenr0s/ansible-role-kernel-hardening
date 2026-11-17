@@ -2,7 +2,7 @@
 - name: Converge (remediation must be refused without confirmation)
   hosts: all
   become: false
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: Try to remediate without confirming
       block:

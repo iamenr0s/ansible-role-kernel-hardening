@@ -31,4 +31,5 @@
           ansible.builtin.include_tasks: audit.yml
           vars:
             __lh_kernel_audit_fatal: true
-          when: linux_hardening_verify | bool
+          # In check mode nothing was written, so a re-audit would always fail.
+          when: linux_hardening_verify | bool and not ansible_check_mode

@@ -2,7 +2,7 @@
 - name: Converge (remediate)
   hosts: all
   become: false
-  gather_facts: true
+  gather_facts: false
   tasks:
     - name: Remediate
       ansible.builtin.include_role:
