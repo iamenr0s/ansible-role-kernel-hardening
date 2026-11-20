@@ -1,8 +1,8 @@
 ---
-- name: Build the desired module list
+- name: configure | Build the desired module list
   ansible.builtin.include_tasks: facts.yml
 
-- name: Ensure the modprobe.d directory exists
+- name: configure | Ensure the modprobe.d directory exists
   ansible.builtin.file:
     path: "{{ linux_hardening_kernel_dropin | dirname }}"
     state: directory
@@ -10,7 +10,7 @@
     group: root
     mode: "0755"
 
-- name: Write the drop-in
+- name: configure | Write the drop-in
   ansible.builtin.template:
     src: modprobe.conf.j2
     dest: "{{ linux_hardening_kernel_dropin }}"
