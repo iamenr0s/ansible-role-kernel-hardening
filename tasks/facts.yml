@@ -1,6 +1,6 @@
 ---
 # Read-only. Sets __lh_kernel_desired (sorted module names) and __lh_kernel_loaded (desired modules loaded now).
-- name: Build the desired module list
+- name: facts | Build the desired module list
   ansible.builtin.set_fact:
     __lh_kernel_desired: >-
       {{ (__linux_hardening_kernel_base
@@ -8,14 +8,14 @@
           + linux_hardening_kernel_modules_extra)
          | difference(linux_hardening_kernel_modules_allow) | unique | sort }}
 
-- name: Read the loaded modules
+- name: facts | Read the loaded modules
   ansible.builtin.slurp:
     src: /proc/modules
   register: __lh_kernel_proc
   failed_when: false
   check_mode: false
 
-- name: Find desired modules that are loaded now
+- name: facts | Find desired modules that are loaded now
   ansible.builtin.set_fact:
     __lh_kernel_loaded: >-
       {{ __lh_kernel_desired

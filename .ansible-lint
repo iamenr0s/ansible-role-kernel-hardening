@@ -3,6 +3,9 @@ profile: production
 exclude_paths:
   - .github/
   - .ansible/
+# Opt-in: task names in tasks/<file>.yml start with '<file> | ' (CoP: prefix sub-task names).
+enable_list:
+  - name[prefix]
 skip_list:
   # Variables keep the iamenr0s.linux_hardening collection-wide prefix (linux_hardening_*), not kernel_hardening_*.
   - var-naming[no-role-prefix]
