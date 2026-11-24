@@ -26,6 +26,23 @@ Variables use the collection-wide `linux_hardening_*` prefix (shared with siblin
 - Modules that are already loaded are never unloaded; they are reported (`fixable: false`) and the drop-in takes effect for them after a reboot. They do not fail the run after remediation.
 - Disabling a module affects only future loads, so remediation cannot break a running system. A later reboot can: allow any module your hardware, filesystems or workloads need (`sctp` for telecom, `udf` for optical media, `usb-storage` for USB disks).
 
+## Role Variables
+
+| Variable | Type | Default | Description |
+|---|---|---|---|
+| `linux_hardening_mode` | str | `audit` | audit is read-only. Choices: `audit`, `remediate`. |
+| `linux_hardening_confirm_remediation` | bool | `false` | Must be true before remediate changes anything. |
+| `linux_hardening_profile` | str | `cis_level1` | cis_level2 adds the stricter module list. Choices: `baseline`, `cis_level1`, `cis_level2`. |
+| `linux_hardening_backup` | bool | `true` | Back up the drop-in when it changes. |
+| `linux_hardening_verify` | bool | `true` | Re-audit after remediation. |
+| `linux_hardening_fail_on_error` | bool | `true` | Fail the play when audit finds deviations. |
+| `linux_hardening_kernel_enabled` | bool | `true` | Run the role. |
+| `linux_hardening_kernel_dropin` | path | `/etc/modprobe.d/99-linux-hardening.conf` | modprobe drop-in. |
+| `linux_hardening_kernel_modules_allow` | list of str | `[]` | Modules to leave available. |
+| `linux_hardening_kernel_modules_extra` | list of str | `[]` | Additional modules to disable. |
+
+**Idempotent:** yes. A second `remediate` run reports no changes (the Molecule `idempotence` step checks this).
+
 ## Example
 ```yaml
 - hosts: all
